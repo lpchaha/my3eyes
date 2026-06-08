@@ -962,10 +962,9 @@ class App:
                         except Exception as e:
                             print(f"【后台弹窗】触发失败: {e}", flush=True)
 
-                    # 4. 休眠剩余时间（摄像头已关闭，DSHOW 资源已释放）
-                    elapsed = time.time() - start_t
-                    next_tick = (detect_count) * interval
-                    remain = next_tick - elapsed
+                    # 4. 休眠到下一个检测时刻（相对于 start_t 的绝对时间点）
+                    next_tick_time = start_t + detect_count * interval
+                    remain = next_tick_time - time.time()
                     if remain > 0:
                         time.sleep(remain)
 

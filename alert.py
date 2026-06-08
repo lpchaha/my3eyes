@@ -4,7 +4,6 @@
 """
 import tkinter as tk
 import ctypes
-import threading
 
 
 class AlertPopup:
@@ -43,21 +42,18 @@ class AlertPopup:
 
     def show(self, message, title="Alert"):
         """
-        显示警示弹窗（非阻塞，在独立线程中运行）
+        显示警示弹窗（通过 root.after 调度到主线程，避免 Tkinter 线程安全问题）
 
         Args:
             message: 弹窗正文内容
             title: 弹窗标题
         """
         self.dismiss()
-        threading.Thread(
-            target=self._show_thread,
-            args=(message, title),
-            daemon=True
-        ).start()
+        # 使用 after(0) 将弹窗创建调度到 Tk 主线程，避免后台线程直接操作 Tk 控件导致崩溃
+        self.master.after(0, self._show_on_main_thread, message, title)
 
-    def _show_thread(self, message, title):
-        """在独立线程中显示弹窗（使用主 Tk root 的 Toplevel，不创建新 Tk）"""
+    def _show_on_main_thread(self, message, title):
+        """在主线程中创建并显示弹窗"""
         try:
             self._popup = tk.Toplevel(self.master)
             self._popup.overrideredirect(True)
