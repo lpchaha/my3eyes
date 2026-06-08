@@ -1,0 +1,18 @@
+# Python 虚拟环境
+.venv/
+
+# Python 字节码缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 日志文件
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# 环境变量
+.env
